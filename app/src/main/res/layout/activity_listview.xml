@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:orientation="horizontal"
+        >
+
+        <EditText
+            android:id="@+id/edittext_search_input"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:textColor="#444444"
+            android:textColorHint="#bfbfbfbf"
+            android:imeOptions="actionSearch"
+            android:hint=""
+            />
+
+        <ImageView
+            android:id="@+id/imageview_search"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginLeft="1dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_search"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:id="@+id/layout_list_photo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        >
+
+        <ListView
+            android:id="@+id/listview_photo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:divider="#eaeaea"
+            android:dividerHeight="1dp"
+            android:cacheColorHint="@null"
+            android:listSelector="#ffffff"
+            android:scrollbars="vertical"
+            android:fadingEdge="none"
+            android:fastScrollEnabled="true"
+            android:background="@null"
+            />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</LinearLayout>
