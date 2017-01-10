@@ -57,7 +57,7 @@ public class PhotoLoaderTask extends AsyncTask<Void, Void, Bitmap>
                 if(bitmap == null) {
                     bitmap = downloadBitmap(mUrlString);
                     /* resizeBitmap */
-                    int scaleOnPixel = 720;
+                    int scaleOnPixel = 680;
                     bitmap = PhotoDeco.resizeBitmap(bitmap, scaleOnPixel);
 
                     mPhotoCache.addBitmap(mUrlString, bitmap);
