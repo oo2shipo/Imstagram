@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.im.imstagram.common.HndResp;
+import com.im.imstagram.datatype.ExtractFactory;
 import com.im.imstagram.datatype.PhotoEntry;
 import com.im.imstagram.http.HttpFetcher;
 import com.im.imstagram.ui.PhotoDetailFragment;
@@ -78,7 +79,7 @@ public class PhotoDetailActivity extends FragmentActivity implements OnClickList
                     String maxId = photoEntry.getId();
 
                     /* 이미지 Url 데이터 가져오기 : 추가 요청 */
-                    getUrlFromWeb(PhotoAgent.getInstance().mSearchWord, maxId);
+                    request(PhotoAgent.getInstance().mSearchWord, maxId);
                 }
             }
         });
@@ -113,9 +114,9 @@ public class PhotoDetailActivity extends FragmentActivity implements OnClickList
     }
 
     /**
-     * 이미지 Url 데이터 가져오기
+     * 이미지 Url 데이터 요청
      */
-    public void getUrlFromWeb(String userId, String maxId)
+    private void request(String userId, String maxId)
     {
         /* 요청한 userId 저장 */
         PhotoAgent.getInstance().mSearchWord = userId;
@@ -134,7 +135,7 @@ public class PhotoDetailActivity extends FragmentActivity implements OnClickList
                     @Override
                     public void run() {
                         /* Json 추출 */
-                        ArrayList<PhotoEntry> alPhotoEntry = PhotoEntry.convertJson2AlEntry(msg);
+                        ArrayList<PhotoEntry> alPhotoEntry = ExtractFactory.create(ExtractFactory.N_TYPE_I).extract(msg);
                         if(alPhotoEntry != null && alPhotoEntry.size() > 0) {
                             PhotoAgent.getInstance().mAlPhotoEntry.addAll(alPhotoEntry); /* 검색 결과 추가 */
                         } else {
@@ -148,7 +149,7 @@ public class PhotoDetailActivity extends FragmentActivity implements OnClickList
                             mPager.setAdapter(mAdapter);
                         } else {
                             //mAdapter = new PhotoPagerAdapter(getSupportFragmentManager(), PhotoAgent.getInstance().mAlPhotoEntry);
-                            mAdapter.notifyDataSetChanged();;
+                            mAdapter.notifyDataSetChanged();
                             //mPager.setAdapter(mAdapter);
                         }
 

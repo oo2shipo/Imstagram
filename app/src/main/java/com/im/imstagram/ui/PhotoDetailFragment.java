@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.im.imstagram.R;
-import com.im.imstagram.photo.PhotoLoaderTask;
+import com.im.imstagram.image.ImageLoader;
 
 /**
  * Created by vioooiv on 2017-01-07.
@@ -24,6 +24,7 @@ public class PhotoDetailFragment extends Fragment
     private ImageView mImageView;
     private ProgressBar mProgressBar;
 
+    public ImageLoader mImageLoader;
 
     public PhotoDetailFragment() {}
 
@@ -55,6 +56,8 @@ public class PhotoDetailFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         mImageUrl = getArguments() != null ? getArguments().getString(IMAGE_DATA_EXTRA) : null;
+
+        mImageLoader = new ImageLoader(getActivity());
     }
 
     /**
@@ -76,8 +79,7 @@ public class PhotoDetailFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
 
         /* 이미지 로딩 */
-        PhotoLoaderTask photoLoaderTask = new PhotoLoaderTask(mImageView, mImageUrl);
-        photoLoaderTask.execute();
+        mImageLoader.DisplayImage(mImageUrl, mImageView);
     }
 
     @Override

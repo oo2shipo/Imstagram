@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.im.imstagram.common.HndResp;
+import com.im.imstagram.datatype.ExtractFactory;
 import com.im.imstagram.datatype.PhotoEntry;
 import com.im.imstagram.http.HttpFetcher;
 import com.im.imstagram.ui.adapter.ListViewAdapter;
@@ -63,7 +64,7 @@ public class ListViewActivity extends Activity implements AbsListView.OnScrollLi
     private void init()
     {
         /* 기본값 요청 */
-        getUrlFromWeb(DEFAULT_USER_ID, DEFAULT_MAX_ID);
+        request(DEFAULT_USER_ID, DEFAULT_MAX_ID);
 
     }
 
@@ -146,7 +147,7 @@ public class ListViewActivity extends Activity implements AbsListView.OnScrollLi
         PhotoEntry.mMoreAvailable = true; /* 검색 가능으로 초기화 */
 
         /* Get 요청 */
-        getUrlFromWeb(userId, DEFAULT_MAX_ID);
+        request(userId, DEFAULT_MAX_ID);
 
         /* 키보드 Hide */
         hideSoftKeyBoard();
@@ -155,9 +156,9 @@ public class ListViewActivity extends Activity implements AbsListView.OnScrollLi
     }
 
     /**
-     * 이미지 Url 데이터 가져오기
+     * 이미지 Url 데이터 요청
      */
-    private void getUrlFromWeb(String userId, String maxId)
+    private void request(String userId, String maxId)
     {
         //Toast.makeText(ListViewActivity.this, "Loading started", Toast.LENGTH_LONG).show();
 
@@ -178,7 +179,7 @@ public class ListViewActivity extends Activity implements AbsListView.OnScrollLi
                     @Override
                     public void run() {
                         /* Json 추출 */
-                        ArrayList<PhotoEntry> alPhotoEntry = PhotoEntry.convertJson2AlEntry(msg);
+                        ArrayList<PhotoEntry> alPhotoEntry = ExtractFactory.create(ExtractFactory.N_TYPE_I).extract(msg);
                         if(alPhotoEntry != null && alPhotoEntry.size() > 0) {
                             PhotoAgent.getInstance().mAlPhotoEntry.addAll(alPhotoEntry); /* 검색 결과 추가 */
                         } else {
@@ -247,6 +248,7 @@ public class ListViewActivity extends Activity implements AbsListView.OnScrollLi
 
             switch(scrollState) {
                 case SCROLL_STATE_IDLE:
+                    mListViewAdapter.mBusy = false;
 
                     /* 리스트뷰에 마지막까지 Scroll 됐을때 : 메모리 왜곡으로 메시지 리스트의 끝에 있는 메시지가 없어지면 다시 가져옴 */
                     if(mIsShownLastItem == true) {
@@ -255,17 +257,19 @@ public class ListViewActivity extends Activity implements AbsListView.OnScrollLi
                         String maxId = photoEntry.getId();
 
                         /* 이미지 Url 데이터 가져오기 : 추가 요청 */
-                        getUrlFromWeb(PhotoAgent.getInstance().mSearchWord, maxId);
+                        request(PhotoAgent.getInstance().mSearchWord, maxId);
                     }
 
                     //mOnScrollState = SCROLL_STATE_IDLE;
                     break;
 
                 case SCROLL_STATE_TOUCH_SCROLL:
+                    mListViewAdapter.mBusy = true;
                     //mOnScrollState = SCROLL_STATE_TOUCH_SCROLL;
                     break;
 
                 case SCROLL_STATE_FLING:
+                    mListViewAdapter.mBusy = true;
                     //mOnScrollState = SCROLL_STATE_FLING;
                     break;
             }

@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import com.im.imstagram.PhotoDetailActivity;
 import com.im.imstagram.R;
 import com.im.imstagram.datatype.PhotoEntry;
-import com.im.imstagram.photo.PhotoLoaderTask;
+import com.im.imstagram.image.ImageLoader;
 
 import java.util.ArrayList;
 
@@ -28,10 +28,16 @@ public class ListViewAdapter extends BaseAdapter
     private Activity mActivity = null;
     private ArrayList<PhotoEntry> mAlPhotoEntry = new ArrayList<PhotoEntry>();
 
+    public ImageLoader mImageLoader;
+    public boolean mBusy = false;
+
     public ListViewAdapter(Activity context, ArrayList<PhotoEntry> alPhotoEntry)
     {
         mActivity = context;
         mAlPhotoEntry = alPhotoEntry;
+
+        mImageLoader = new ImageLoader(context);
+        mBusy = false;
     }
 
     public ArrayList<PhotoEntry> getAlPhotoEntry()
@@ -46,30 +52,37 @@ public class ListViewAdapter extends BaseAdapter
         {
             ViewHolder viewHolder;
 
-//            if(convertView == null) {
+            if(convertView == null) {
                 LayoutInflater layoutInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = layoutInflater.inflate(R.layout.item_photo, parent, false);
 
-                viewHolder = new ViewHolder(convertView);
+                viewHolder = new ViewHolder();
+                viewHolder.imageViewPhoto = (ImageView) convertView.findViewById(R.id.imageview_photo);
+
                 convertView.setTag(viewHolder);
-//            } else {
-//                viewHolder = (ViewHolder) convertView.getTag();
-//            }
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+                viewHolder.imageViewPhoto.setImageResource(R.drawable.x_photo_empty);
+            }
 
             final PhotoEntry photoEntry = (PhotoEntry) getItem(position);
 
+//            if(mBusy == false) {
+//            } else {
+//                viewHolder.imageViewPhoto.setImageResource(R.drawable.x_photo_empty);
+//            }
+
+            /* 이미지 로딩 */
+            mImageLoader.DisplayImage(photoEntry.getStdUrl(), viewHolder.imageViewPhoto);
+
             viewHolder.imageViewPhoto.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    /* 상세 이미지 보기 */
+                /* 상세 이미지 보기 */
                     final Intent intent = new Intent(mActivity, PhotoDetailActivity.class);
                     intent.putExtra(PhotoDetailActivity.EXTRA_IMAGE, (int) position);
                     mActivity.startActivity(intent);
                 }
             });
-
-            /* 이미지 로딩 */
-            PhotoLoaderTask photoLoaderTask = new PhotoLoaderTask(viewHolder.imageViewPhoto, photoEntry.getStdUrl());
-            photoLoaderTask.execute();
 
         } catch(Exception e) {
             Log.e(TAG, e.getMessage());
@@ -77,35 +90,6 @@ public class ListViewAdapter extends BaseAdapter
 
         return convertView;
     }
-
-//    @Override
-//    public View getView(final int position, View convertView, ViewGroup parent)
-//    {
-//        try
-//        {
-//            LayoutInflater layoutInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            convertView = layoutInflater.inflate(R.layout.item_photo, parent, false);
-//
-//            final PhotoEntry photoEntry = (PhotoEntry) getItem(position);
-//
-//            ImageView ImageViewPhoto = (ImageView) convertView.findViewById(R.id.imageview_photo);
-//            ImageViewPhoto.setOnClickListener(new View.OnClickListener() {
-//                public void onClick(View v) {
-//                    /* 상세 이미지 보기 */
-//                }
-//            });
-//
-//            /* 이미지 로딩 */
-//            PhotoLoaderTask imageLoaderTask = new PhotoLoaderTask(ImageViewPhoto, photoEntry.getStdUrl());
-//            imageLoaderTask.execute();
-//
-//        } catch(Exception e) {
-//            Log.e(TAG, e.getMessage());
-//        }
-//
-//        return convertView;
-//    }
-
 
     @Override
     public int getCount()
@@ -140,12 +124,6 @@ public class ListViewAdapter extends BaseAdapter
      */
     static class ViewHolder
     {
-        ImageView imageViewPhoto;
-
-        /* 레이아웃 설정 */
-        public ViewHolder(View baseView)
-        {
-            imageViewPhoto = (ImageView) baseView.findViewById(R.id.imageview_photo);
-        }
+        public ImageView imageViewPhoto;
     }
 }
