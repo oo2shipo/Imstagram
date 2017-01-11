@@ -103,7 +103,7 @@ public class ImageLoader
         PhotoToLoad photoToLoad;
 
         PhotosLoader(PhotoToLoad photoToLoad){
-            this.photoToLoad=photoToLoad;
+            this.photoToLoad = photoToLoad;
         }
 
         @Override
